@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import math
 import pandas as pd
 import shared as sh
+import preprocess
 
 #def plotTrajectories(segment):
 #    
@@ -19,8 +20,8 @@ import shared as sh
 def drawArena():
     
 
-    df = sg.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
-    df = sg.addColCumulativeDistance(df)
+    df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
+    df = preprocess.addColCumulativeDistance(df)
     
     #draw approximate circumference
     print("min x:", df[['x']].min())
@@ -52,14 +53,14 @@ def drawArena():
     
 drawArena()
     
-df = sg.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
-df = sg.addColCumulativeDistance(df)
+df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
+df = preprocess.addColCumulativeDistance(df)
 
 segment, cum_dist_end_segment = sg.getSegment(df, 500, 0, 0)  
 plt.plot(segment['x'],segment['y'])
 
 print "cum_dist_end_segment:", cum_dist_end_segment
-for iSeg in range(40):
+for iSeg in range(0):
     segment, cum_dist_end_segment = sg.getSegment(df, 500, 0.3, cum_dist_end_segment)
     plt.plot(segment['x'],segment['y'])
     

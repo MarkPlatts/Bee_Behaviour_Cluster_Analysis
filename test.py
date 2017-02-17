@@ -7,16 +7,22 @@ Created on Mon Feb 13 06:33:50 2017
 
 import unittest
 import segment as sg
-from time import gmtime, strftime
+import preprocess
+import calc_features
 
 class TestSegmentMethods(unittest.TestCase):
     
-    def test_FindingCorrectSecondSegment(self):
-        print strftime("%Y-%m-%d %H:%M:%S", gmtime())         
+    def setUp(Self):
         
-        df = sg.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
-
-        df = sg.addColCumulativeDistance(df)
+        df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
+        df = preprocess.addColCumulativeDistance(df)
+        df = preprocess.addDistanceCentreCol(df)
+        
+        return(df)
+    
+    def test_FindingCorrectSecondSegment(self):      
+        
+        df = self.setUp()
         
         first_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0, 0)        
         second_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0.3, cum_dist_end_segment)
@@ -24,6 +30,35 @@ class TestSegmentMethods(unittest.TestCase):
         self.assertAlmostEqual(second_segment['CumulativeDistance'].iloc[0], 7.53961357202363)
         self.assertAlmostEqual(second_segment['CumulativeDistance'].iloc[-1], 17.5413857439795)
         
+    def test_DistancePoint100FromCentre(self):
+        
+        df = self.setUp()
+        
+        Distance = df['DistanceCentre'].iloc[99]
+        
+        self.assertAlmostEqual(Distance, 34.1204235303938)
+        
+    def test_MedianDistanceCentre(self):
+        df = self.setUp()
+        
+        width = df[['x']].max() - df[['x']].min()
+        
+        first_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0, 0)        
+        second_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0.3, cum_dist_end_segment)
+        
+        median_distance_centre = calc_features.calcMedianDistanceFromCentre(second_segment, width)
+        self.assertAlmostEqual(median_distance_centre, 0.861570194585884)
+        
+    def test_iQRangeDistanceCentre(self):
+        df = self.setUp()
+        
+        width = df[['x']].max() - df[['x']].min()
+        
+        first_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0, 0)        
+        second_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0.3, cum_dist_end_segment)
+        
+        iq_range_distance_centre = calc_features.calcIQRange(second_segment, width)
+        self.assertAlmostEqual(iq_range_distance_centre, 0.00397643745469342)
         
 #    def test_CalculatingCorrectDistanceBetweenPoints(self):
 #        data = sg.LoadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")

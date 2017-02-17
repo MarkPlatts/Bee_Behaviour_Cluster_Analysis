@@ -9,11 +9,6 @@ import numpy as np
 import pandas as pd
 import math
 
-
-#Load the data
-def loadData(data_file_name_path):
-    loaded_data = pd.read_csv(data_file_name_path)
-    return loaded_data
     
     
 #def CalcDistanceBetweenPoints(p1,p2):
@@ -24,25 +19,6 @@ def loadData(data_file_name_path):
 #    line = df.iloc[line_number,:]
 #    point = [line.x, line.y]
 #    return point
-    
-def calcTriangleLegs(traj):
-    previous_points = traj[['x','y']].iloc[1:,:].values
-    subsequent_points = traj[['x','y']].iloc[0:-1,:].values
-    triangle_legs = subsequent_points - previous_points
-    return(triangle_legs)
-    
-def addColCumulativeDistance(traj):
-
-    triangle_legs = calcTriangleLegs(traj)
-
-    hyps = np.hypot(triangle_legs[:,0], triangle_legs[:,1])
-    
-    cumul = np.cumsum(hyps)
-    cumul = np.concatenate((np.array([0]), cumul), axis=0)
-    
-    traj_concat = pd.concat([traj, pd.DataFrame({"CumulativeDistance":cumul})], axis=1)
-    
-    return traj_concat
     
     
 def getSegment(traj, lseg, ovlp, cum_dist_end_prev):
