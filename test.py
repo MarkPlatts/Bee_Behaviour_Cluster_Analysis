@@ -9,10 +9,12 @@ import unittest
 import segment as sg
 import preprocess
 import calc_features
+import math
+import numpy as np
 
 class TestSegmentMethods(unittest.TestCase):
     
-    def setUp(Self):
+    def setUp(self):
         
         df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
         df = preprocess.addColCumulativeDistance(df)
@@ -59,6 +61,43 @@ class TestSegmentMethods(unittest.TestCase):
         
         iq_range_distance_centre = calc_features.calcIQRange(second_segment, width)
         self.assertAlmostEqual(iq_range_distance_centre, 0.00397643745469342)
+        
+    def test_getSegmentLength(self):
+        df = self.setUp()
+
+        first_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0, 0)        
+        second_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0.3, cum_dist_end_segment) 
+        
+        length_segment = sg.getSegmentLength(second_segment)
+        
+        self.assertAlmostEqual(length_segment, 10.0017721719558137)
+        
+    def test_areaFormula(self):
+
+        points = np.array([[-1,0,0,1],[0,1,-1,0]]).T      
+        area = calc_features.areaFormula(points)
+        
+        self.assertAlmostEqual(area, math.pi)
+        
+#    def test_focusFormula(self):
+#        
+#        area = calc_features.calcArea(points)
+#
+#        focus = calc_features.focusFormula(area, seg_length)
+#
+#        
+#        self.assertAlmostEqual(area, math.pi)
+        
+        
+#    def test_calcFocus(self):
+#        df = self.setUp()
+#        
+#        first_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0, 0)        
+#        second_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0.3, cum_dist_end_segment)
+#        
+#        focus = calc_features.calcFocus(segment)
+        
+    
         
 #    def test_CalculatingCorrectDistanceBetweenPoints(self):
 #        data = sg.LoadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")

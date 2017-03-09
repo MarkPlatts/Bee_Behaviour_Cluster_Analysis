@@ -8,8 +8,6 @@ Created on Tue Jan 24 15:54:17 2017
 import numpy as np
 import pandas as pd
 import math
-
-    
     
 #def CalcDistanceBetweenPoints(p1,p2):
 #    return math.hypot(p2[0] - p1[0], p2[1] - p1[1])
@@ -40,12 +38,21 @@ def getSegment(traj, lseg, ovlp, cum_dist_end_prev):
     cumdist = traj['CumulativeDistance']
     end_seg_index = cumdist[cumdist==value_just_above].index[0]
     
-    segment = traj.loc[start_seg_index:end_seg_index,:]
+    #segment = traj.loc[start_seg_index:end_seg_index,:]
+    segment = traj.loc[start_seg_index:end_seg_index,:].reset_index(drop=True)
     
     #print(segment)
     
     return segment, value_just_above
-        
+    
+def getSegmentLength(segment):
+    
+    start = segment["CumulativeDistance"].iloc[0]
+    end = segment["CumulativeDistance"].iloc[-1]
+    
+    total_distance = end - start
+    
+    return total_distance
 
 #def trajectory_segmentation_constant_len( traj, lseg, ovlp, count):
 #    # SEGMENT_TRAJECTORY Splits the trajectory in segments of length
