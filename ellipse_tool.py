@@ -76,7 +76,7 @@ class EllipseTool:
         U, s, rotation = linalg.svd(A)
         radii = 1.0/np.sqrt(s)
         
-        return (center, radii, rotation)
+        return (center, radii, rotation) # centre(x,y)
         
         
     def getEllipseArea(self, radii):

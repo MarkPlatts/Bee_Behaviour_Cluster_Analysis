@@ -12,6 +12,7 @@ import ellipse_tool as et
 import numpy as np
 
 df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
+
 df = preprocess.addColCumulativeDistance(df)
 df = preprocess.addDistanceCentreCol(df)
 

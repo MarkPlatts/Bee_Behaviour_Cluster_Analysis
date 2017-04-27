@@ -16,7 +16,6 @@ def loadData(data_file_name_path):
     return loaded_data
 
 
-
 def addColCumulativeDistance(traj):
 #Create a column that gives the cumulative distance from the beginning of the test
     triangle_legs = calcTriangleLegs(traj)
@@ -31,14 +30,12 @@ def addColCumulativeDistance(traj):
     return traj_concat
     
     
-    
 def calcTriangleLegs(traj):
 #calculate the triangle legs between two points ready to be used to calc hypo
-    previous_points = traj[['x','y']].iloc[1:,:].values
-    subsequent_points = traj[['x','y']].iloc[0:-1,:].values
+    previous_points = traj[['x_mm','y_mm']].iloc[1:,:].values
+    subsequent_points = traj[['x_mm','y_mm']].iloc[0:-1,:].values
     triangle_legs = subsequent_points - previous_points
     return(triangle_legs)
-    
     
 
 def addDistanceCentreCol(df):
@@ -47,8 +44,8 @@ def addDistanceCentreCol(df):
     x_centre, y_centre = shared.centreArena(df)
     
     #calc median distance to centre
-    x_dif_centre = df['x'] - x_centre
-    y_dif_centre = df['y'] - y_centre 
+    x_dif_centre = df['x_mm'] - x_centre
+    y_dif_centre = df['y_mm'] - y_centre 
     
     #calc distance from centre for each point in segment
     hyps = np.hypot(x_dif_centre, y_dif_centre)
