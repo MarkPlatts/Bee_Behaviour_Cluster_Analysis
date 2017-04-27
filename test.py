@@ -215,6 +215,17 @@ class TestSegmentMethods(unittest.TestCase):
         
         self.assertAlmostEqual(min_enclosing_ellipse_area, math.pi)
         
+    def test_calcMeanSpeed(self):
+
+        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+                                                                #(traj, lseg, ovlp, cum_dist_end_prev)
+
+        dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)
+        length_first_segment = cs.getSegmentLength(dt_first_segment)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena_diameter, arena_centre_x, arena_centre_y)
+        #print("features_first_segment.maximum_loop_length:", features_first_segment.maximum_loop_length)
+        self.assertEqual(features_first_segment.mean_speed, 118.75)
+        
         
 #    def test_focusFormula(self):
 #        

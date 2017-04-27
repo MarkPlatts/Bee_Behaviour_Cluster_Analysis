@@ -53,4 +53,5 @@ def addDistanceCentreCol(df):
     #add to dataframe and return
     df = pd.concat([df, pd.DataFrame({"DistanceCentre":hyps})], axis=1)
     
-    return df
+    return df 
+    

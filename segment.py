@@ -18,6 +18,9 @@ class Segment:
 
     def __init__(self, dt_segment, seg_length, arena_diameter, arena_centre_x, arena_centre_y):
         
+        #constants
+        self.CONST_TIME_BETWEEN_FRAMES = 0.02 #seconds - there are 30,000 frames per 10 minutes
+        
         #output - features
         self.median_distance_from_centre = 0
         self.IQRange = 0
@@ -26,6 +29,7 @@ class Segment:
         self.maximum_loop_length = 0   
         self.inner_radius_variation = 0
         self.central_displacement = 0
+        self.mean_speed = 0
         
         #input
         self.segment_length = seg_length
@@ -44,6 +48,7 @@ class Segment:
         median = self.dt_segment["DistanceCentre"].median()/(self.arena_diameter/2.0)
         return(median)
         
+        
     def calcIQRange(self):
         LQ = self.dt_segment["DistanceCentre"].quantile(0.25)
         UQ = self.dt_segment["DistanceCentre"].quantile(0.75)
@@ -51,11 +56,14 @@ class Segment:
         #IQRange = IQRange
         return(IQRange)
     
+    
     def calcFocus(self, min_enclosing_ellipse_area):
         return(1 - 4 * min_enclosing_ellipse_area/(math.pi*self.segment_length**2))
         
+        
     def calcEccentricity(self, a, b):
          return(math.sqrt(1 - (b**2)/(a**2)))
+         
          
     def calcMaximumLoop(self):
         
@@ -99,6 +107,7 @@ class Segment:
 #                        return(0)
         return(max_length)
         
+        
     def calcInnerRadiusVariation(self, ellipse_centre, points):
 
         points_distance_centre_ellipse = np.sqrt(np.square(points[:,0]-ellipse_centre[0]) + np.square(points[:,1]-ellipse_centre[1]))
@@ -112,15 +121,30 @@ class Segment:
         
         return(inner_radius_variation)
         
+        
     def calcCentralDisplacement(self, ellipse_centre_x, ellipse_centre_y, arena_centre_x, arena_centre_y):
         
         x_distance = ellipse_centre_x-arena_centre_x
         y_distance = ellipse_centre_y-arena_centre_y
         
         central_displacement = np.sqrt(np.square(x_distance) + np.square(y_distance))*2/self.arena_diameter
-        print("Central displacement:", central_displacement)
+        # print("Central displacement:", central_displacement)
         
         return(central_displacement)
+        
+        
+    def calcMeanSpeed(self):
+
+        distance_travelled_segment = self.dt_segment['CumulativeDistance'].iloc[-1] - \
+                    self.dt_segment['CumulativeDistance'].iloc[0]
+        
+        frames_elapsed_segment = self.dt_segment['frames.comb'].iloc[-1] - \
+                    self.dt_segment['frames.comb'].iloc[0]
+                    
+        mean_speed_segment = distance_travelled_segment / (frames_elapsed_segment * self.CONST_TIME_BETWEEN_FRAMES)
+        
+        return(mean_speed_segment)
+        
         
     #helper methods =======================================================================================
                 
@@ -156,4 +180,4 @@ class Segment:
         self.central_displacement = self.calcCentralDisplacement(
                                                             centre[0], centre[1],
                                                             self.arena_centre_x.iloc[0], self.arena_centre_y.iloc[0])
-        
+        self.mean_speed = self.calcMeanSpeed()
