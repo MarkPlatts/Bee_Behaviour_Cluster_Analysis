@@ -17,9 +17,13 @@ import math
 
 class EllipseTool:
     """Some stuff for playing with ellipsoids"""
-    def __init__(self): pass
+    def __init__(self):
+        self.centre = None
+        self.radii = None
+        self.rotation = None
+        
     
-    def getMinAreaEllipse(self, P=None, tolerance=0.01):
+    def calcMinAreaEllipse(self, P=None, tolerance=0.01):
         #Taken from https://github.com/minillinim/ellipsoid/blob/master/ellipsoid.py and altered so
         #that it works with ellipses in 2d - (mark platts 7/3/17)        
         
@@ -37,7 +41,7 @@ class EllipseTool:
              [x,y,z,...]]
         
         Returns:
-        (center, radii, rotation)
+        (centre, radii, rotation)
         
         """
         (N, d) = np.shape(P)
@@ -63,20 +67,21 @@ class EllipseTool:
             err = np.linalg.norm(new_u - u)
             u = new_u
 
-        # center of the ellipse 
-        center = np.dot(P.T, u)
+        # centre of the ellipse 
+        self.centre = np.dot(P.T, u)
     
         # the A matrix for the ellipse
         A = linalg.inv(
                        np.dot(P.T, np.dot(np.diag(u), P)) - 
-                       np.array([[a * b for b in center] for a in center])
+                       np.array([[a * b for b in self.centre] for a in self.centre])
                        ) / d
                        
         # Get the values we'd like to return
-        U, s, rotation = linalg.svd(A)
-        radii = 1.0/np.sqrt(s)
+        U, s, self.rotation = linalg.svd(A)
+        self.radii = 1.0/np.sqrt(s)
         
-        return (center, radii, rotation) # centre(x,y)
+        pass
+        #return (centre, radii, rotation) # centre(x,y)
         
         
     def getEllipseArea(self, radii):

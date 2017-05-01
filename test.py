@@ -12,40 +12,36 @@ import loop_tool as lt
 import math
 import numpy as np
 import create_segment as cs
+import classArena
 
 class TestSegmentMethods(unittest.TestCase):
     
-    def loadData(self, path):
-        
-        df = preprocess.loadData(path)
-        df = preprocess.addColCumulativeDistance(df)
-        df = preprocess.addDistanceCentreCol(df)
-        
-        width = df[['x_mm']].max() - df[['x_mm']].min()
-        height = df[['y_mm']].max() - df[['y_mm']].min()
-        arena_diameter = max(width.iloc[0], height.iloc[0])
-
-        arena_centre_x = (df[['x_mm']].max() + df[['x_mm']].min())/2
-        arena_centre_y = (df[['y_mm']].max() + df[['y_mm']].min())/2
-        #print("df:", df, "   arena_diameter:", arena_diameter, "   arena_centre_x:",arena_centre_x, "   arena_centre_y:",arena_centre_y)
-        return(df, arena_diameter, arena_centre_x, arena_centre_y)
+#    def loadData(self, path):
+#        
+#        df = preprocess.loadData(path)
+#        df = preprocess.addColCumulativeDistance(df)
+#        df = preprocess.addDistanceCentreCol(df)
+#
+#        return(df)
         
         
     def test_MaximumLoopLength(self):
-
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+        
+        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+        #df = self.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
-
+        arena = classArena.classArena(df)
+        
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)
         length_first_segment = cs.getSegmentLength(dt_first_segment)
-        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena_diameter, arena_centre_x, arena_centre_y)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena)
         #print("features_first_segment.maximum_loop_length:", features_first_segment.maximum_loop_length)
         self.assertEqual(features_first_segment.maximum_loop_length, 15)
         
     
     def test_FindingCorrectSecondSegment(self):      
         
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
         
         first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
         second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
@@ -55,7 +51,7 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_DistancePoint100FromCentre(self):
         
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData(
+        df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
         
         Distance = df['DistanceCentre'].iloc[99]
@@ -64,8 +60,9 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_MedianDistanceCentre(self):
         
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData(
+        df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        arena = classArena.classArena(df)        
         
         #arena_diameter = df[['x']].max() - df[['x']].min()
         
@@ -73,15 +70,14 @@ class TestSegmentMethods(unittest.TestCase):
         dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
         length_second_segment = cs.getSegmentLength(dt_second_segment)
         
-        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena_diameter, arena_centre_x, arena_centre_y)
-        #features_second_segment.calcFeatures()
-        #features_second_segment.calcMedianDistanceFromCentre(arena_diameter)
+        features_second_segment = sg.Segment(dt_second_segment, length_second_segment, arena)
         
         self.assertAlmostEqual(features_second_segment.median_distance_from_centre, 0.8628325515)
         
     def test_iQRangeDistanceCentre(self):
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData(
+        df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        arena = classArena.classArena(df)        
         
         #arena_diameter = df[['x']].max() - df[['x']].min()
         
@@ -89,13 +85,13 @@ class TestSegmentMethods(unittest.TestCase):
         dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
         
         len_second_segment = cs.getSegmentLength(dt_second_segment)        
-        second_segment_features = sg.Segment(dt_second_segment, len_second_segment, arena_diameter, arena_centre_x, arena_centre_y)
+        second_segment_features = sg.Segment(dt_second_segment, len_second_segment, arena)
         
         iq_range_distance_centre = second_segment_features.IQRange
         self.assertAlmostEqual(iq_range_distance_centre, 0.0164803959758471)
         
     def test_getSegmentLength(self):
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData(
+        df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
 
         first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
@@ -106,21 +102,22 @@ class TestSegmentMethods(unittest.TestCase):
         self.assertAlmostEqual(length_segment, 10.4350527761)
         
     def test_areaFormula(self):
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData(
+        df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        arena = classArena.classArena(df)        
         
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
         dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
         length_second_segment = cs.getSegmentLength(dt_second_segment)
         
-        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena_diameter, arena_centre_x, arena_centre_y)
+        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena)
         
         #features_second_segment.calcMinEnclosingEllipseArea
 
         points = np.array([[-1,0,0,1],[0,1,-1,0]]).T      
         
-        centre, radii, rotation = features_second_segment.findMinEnclosingEllipse(points)
-        min_enclosing_ellipse_area = features_second_segment.calcMinEnclosingEllipseArea(radii)
+        ellipse = features_second_segment.findMinEnclosingEllipse(points)
+        min_enclosing_ellipse_area = features_second_segment.calcMinEnclosingEllipseArea(ellipse.radii)
         
         self.assertAlmostEqual(min_enclosing_ellipse_area, math.pi)
         
@@ -197,35 +194,38 @@ class TestSegmentMethods(unittest.TestCase):
         self.assertFalse(bIntersect)         
         
     def test_calcCentralDisplacement(self): 
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData(
+        df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
-        
+        arena = classArena.classArena(df)
+                
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
         dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
         length_second_segment = cs.getSegmentLength(dt_second_segment)
         
-        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena_diameter, arena_centre_x, arena_centre_y)
+        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena)
         
         #features_second_segment.calcMinEnclosingEllipseArea
 
         points = np.array([[-1,0,0,1],[0,1,-1,0]]).T      
         
-        centre, radii, rotation = features_second_segment.findMinEnclosingEllipse(points)
-        min_enclosing_ellipse_area = features_second_segment.calcMinEnclosingEllipseArea(radii)
+        ellipse = features_second_segment.findMinEnclosingEllipse(points)
+        min_enclosing_ellipse_area = features_second_segment.calcMinEnclosingEllipseArea(ellipse.radii)
         
         self.assertAlmostEqual(min_enclosing_ellipse_area, math.pi)
         
     def test_calcMeanSpeed(self):
 
-        df, arena_diameter, arena_centre_x, arena_centre_y = self.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
-
+        arena = classArena.classArena(df)
+        
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)
         length_first_segment = cs.getSegmentLength(dt_first_segment)
-        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena_diameter, arena_centre_x, arena_centre_y)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena)
         #print("features_first_segment.maximum_loop_length:", features_first_segment.maximum_loop_length)
         self.assertEqual(features_first_segment.mean_speed, 118.75)
         
+    #def test_calcMinSpeed(self)
         
 #    def test_focusFormula(self):
 #        

@@ -9,6 +9,11 @@ import pandas as pd
 import numpy as np
 import shared
 
+def execute(data_file_name_path):
+    df = loadData(data_file_name_path)
+    df = addColCumulativeDistance(df)
+    df = addDistanceCentreCol(df)    
+    return(df)
 
 def loadData(data_file_name_path):
 #Load the data
@@ -35,11 +40,13 @@ def calcTriangleLegs(traj):
     previous_points = traj[['x_mm','y_mm']].iloc[1:,:].values
     subsequent_points = traj[['x_mm','y_mm']].iloc[0:-1,:].values
     triangle_legs = subsequent_points - previous_points
+    
     return(triangle_legs)
     
 
 def addDistanceCentreCol(df):
 #calc distance between all points and the centre
+
     #calc centre
     x_centre, y_centre = shared.centreArena(df)
     
