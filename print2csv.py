@@ -20,6 +20,7 @@ def output(list_segments):
     row = ["SegmentIndex"]
     for iFeature in seg1.features:
         row = row + [iFeature.featureName()]
+        
     writer.writerow(row)    
     
     #write the segment values    

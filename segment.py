@@ -20,18 +20,10 @@ class Segment:
 
     def __init__(self, segment_data, seg_length, arena, index):
         
+        self.index = index
+        
         #output - features
         self.features = None
-#        self.median_distance_from_centre = None
-#        self.IQRange = None
-#        self.focus = None
-#        self.eccentricity = None 
-#        self.maximum_loop_length = None   
-#        self.inner_radius_variation = None
-#        self.central_displacement = None
-#        self.mean_speed = None
-        
-        self.index = index
         
         #input
         self.segment_length = seg_length
@@ -98,5 +90,8 @@ class Segment:
                          feature.MeanAbsRotation(self, enums.eFeature.MedianAbsRotation),
                          feature.MinAbsRotation(self, enums.eFeature.MinAbsRotation),
                          feature.MaxAbsRotation(self, enums.eFeature.MaxAbsRotation),
-                         feature.IQAbsRotation(self, enums.eFeature.IQAbsRotation)]
+                         feature.IQAbsRotation(self, enums.eFeature.IQAbsRotation),
+                         feature.PathEfficiency(self, enums.eFeature.PathEfficiency),
+                         feature.SumAbsoluteAngles(self, enums.eFeature.SumAbsoluteAngles),
+                         feature.LocationDensity(self, enums.eFeature.LocationDensity)]
 

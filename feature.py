@@ -16,6 +16,7 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 import math
 import loop_tool as lt
+import scipy
 #import enumFeature.enumFeature
 
 class Feature:
@@ -297,6 +298,77 @@ class IQAbsRotation(Feature):
         LQ =  np.percentile(self.segment.segment_data['Abs_Rotation_Corrected'].iloc[1:], 25)
         IQR = (UQ - LQ)
         return(IQR)
+        
+class PathEfficiency(Feature):
+    def featureName(self):
+        return "PathEfficiency"
+        
+    def calculateFeature(self):
+        sg = self.segment.segment_data
+        return(math.sqrt((sg['x_mm'].iloc[-1] - sg['x_mm'].iloc[0])**2 + (sg['y_mm'].iloc[-1] - sg['y_mm'].iloc[0])**2) / (sg['CumulativeDistance'].iloc[-1] - sg['CumulativeDistance'].iloc[0]))
+        
+class SumAbsoluteAngles(Feature):
+    def featureName(self):
+        return "SumAbsoluteAngles"
+        
+    def extractVector(self, sg, index):
+#        print("sg.iloc[index + 1]['x_mm']: ", sg.iloc[index]['x_mm'])
+#        print("sg.iloc[index + 1]['y_mm']: ", sg.iloc[index]['y_mm'])
+        u =  {'x' : sg.iloc[index + 1]['x_mm'] - sg.iloc[index]['x_mm'],
+              'y' : sg.iloc[index + 1]['y_mm'] - sg.iloc[index]['y_mm']}
+        return u
+        
+    def Magnitude(self, vector):
+        magnitude = math.sqrt((vector['x']**2 + vector['y']**2))
+        return magnitude
+        
+    def crossProduct(self, u, v):
+        cross_product = v['x'] * u['x'] + v['y'] * u['y']
+        return(cross_product)
+        
+    def calculateFeature(self):
+        
+        sg = self.segment.segment_data
+        nPoints = sg.shape[0]
+        
+        sum_angles = 0
+        
+        for iPoint in range(0, nPoints - 2):
+            
+            u = self.extractVector(sg, iPoint)
+            v = self.extractVector(sg, iPoint+1)
+            
+            angle = math.acos(self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v)))
+            
+            sum_angles = sum_angles + angle
+        
+        return(sum_angles)
+            
+class LocationDensity(Feature):
+    def featureName(self):
+        return "LocationDensity"
+        
+    def calculateFeature(self):
+        sg = self.segment.segment_data
+        nPoints = sg.shape[0]
+        sum_distance_all_points = 0
+        
+        for iStartPoint in range(0, nPoints - 1):
+            for iEndPoint in range(iStartPoint + 1, nPoints):
+                StartPoint = {'x': sg.iloc[iStartPoint]['x_mm'], 'y': sg.iloc[iStartPoint]['y_mm']}
+                EndPoint =   {'x': sg.iloc[iEndPoint]['x_mm'], 'y': sg.iloc[iEndPoint]['y_mm']}
+#                print("StartPoint:", StartPoint)
+#                print("EndPoint:", EndPoint)
+#                diff_x = EndPoint['x'] - StartPoint['x']
+
+                sum_distance_all_points = sum_distance_all_points + \
+                                math.sqrt((EndPoint['x'] - StartPoint['x'])**2 + (EndPoint['y'] - StartPoint['y'])**2)
+                                
+        ncombinations_distances = scipy.misc.comb(N = nPoints, k = 2, exact=False)
+        
+        location_density = sum_distance_all_points / ncombinations_distances
+        
+        return(location_density)
         
 #======================================================================================
 

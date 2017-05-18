@@ -28,3 +28,6 @@ class eFeature:
     MinAbsRotation = 19
     MaxAbsRotation = 20
     IQAbsRotation = 21
+    PathEfficiency = 22
+    SumAbsoluteAngles = 23
+    LocationDensity = 24

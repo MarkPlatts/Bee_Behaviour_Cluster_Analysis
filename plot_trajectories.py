@@ -9,7 +9,6 @@ import create_segment as cs
 import segment as sg
 import matplotlib.pyplot as plt
 import math
-import pandas as pd
 import shared as sh
 import preprocess
 

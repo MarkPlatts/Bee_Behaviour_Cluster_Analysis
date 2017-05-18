@@ -13,17 +13,11 @@ import math
 import numpy as np
 import create_segment as cs
 import classArena
+import enums
+import print2csv
 
 class TestSegmentMethods(unittest.TestCase):
-    
-#    def loadData(self, path):
-#        
-#        df = preprocess.loadData(path)
-#        df = preprocess.addColCumulativeDistance(df)
-#        df = preprocess.addDistanceCentreCol(df)
-#
-#        return(df)
-        
+            
         
     def test_MaximumLoopLength(self):
         
@@ -34,9 +28,10 @@ class TestSegmentMethods(unittest.TestCase):
         
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)
         length_first_segment = cs.getSegmentLength(dt_first_segment)
-        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena)
-        #print("features_first_segment.maximum_loop_length:", features_first_segment.maximum_loop_length)
-        self.assertEqual(features_first_segment.maximum_loop_length, 15)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena, index = 0)
+
+        feat = features_first_segment.getFeature(enums.eFeature.MaximumLoop)    
+        self.assertEqual(feat.value, 15)
         
     
     def test_FindingCorrectSecondSegment(self):      
@@ -64,31 +59,30 @@ class TestSegmentMethods(unittest.TestCase):
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
         arena = classArena.classArena(df)        
         
-        #arena_diameter = df[['x']].max() - df[['x']].min()
-        
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
         dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
         length_second_segment = cs.getSegmentLength(dt_second_segment)
         
-        features_second_segment = sg.Segment(dt_second_segment, length_second_segment, arena)
+        features_second_segment = sg.Segment(dt_second_segment, length_second_segment, arena, 0)
         
-        self.assertAlmostEqual(features_second_segment.median_distance_from_centre, 0.8628325515)
+        feat = features_second_segment.getFeature(enums.eFeature.MedianDistanceFromCentre)    
+        
+        self.assertAlmostEqual(feat.value, 0.8628325515)
         
     def test_iQRangeDistanceCentre(self):
         df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
         arena = classArena.classArena(df)        
         
-        #arena_diameter = df[['x']].max() - df[['x']].min()
-        
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
         dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
         
         len_second_segment = cs.getSegmentLength(dt_second_segment)        
-        second_segment_features = sg.Segment(dt_second_segment, len_second_segment, arena)
+        second_segment_features = sg.Segment(dt_second_segment, len_second_segment, arena, 0)
         
-        iq_range_distance_centre = second_segment_features.IQRange
-        self.assertAlmostEqual(iq_range_distance_centre, 0.0164803959758471)
+        feat = second_segment_features.getFeature(enums.eFeature.IQRange) 
+        self.assertAlmostEqual(feat.value, 0.0164803959758471)
+
         
     def test_getSegmentLength(self):
         df = preprocess.execute(
@@ -110,7 +104,7 @@ class TestSegmentMethods(unittest.TestCase):
         dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
         length_second_segment = cs.getSegmentLength(dt_second_segment)
         
-        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena)
+        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena, 0)
         
         #features_second_segment.calcMinEnclosingEllipseArea
 
@@ -193,26 +187,24 @@ class TestSegmentMethods(unittest.TestCase):
         bIntersect, location = lt.linesIntersect(line1,line2)
         self.assertFalse(bIntersect)         
         
-    def test_calcCentralDisplacement(self): 
+    def test_calcCentralDisplacement_withinCorrectRange(self): 
+        
         df = preprocess.execute(
         "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
         arena = classArena.classArena(df)
-                
-        dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
-        dt_second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
-        length_second_segment = cs.getSegmentLength(dt_second_segment)
         
-        features_second_segment = sg.Segment(dt_second_segment,length_second_segment, arena)
-        
-        #features_second_segment.calcMinEnclosingEllipseArea
+        dt_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)
+        for i in range(0,20):
+            dt_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment) 
+            length_segment = cs.getSegmentLength(dt_segment)
+            features_segment = sg.Segment(dt_segment, length_segment, arena, 0)
+            cent_displ = features_segment.getFeature(enums.eFeature.CentralDisplacement).value
+#            print("cent_displ:", cent_displ)
+            self.assertLessEqual(cent_displ, 1) # test never bigger than arena size
+            self.assertGreater(cent_displ, 0) # test positive
+            self.assertGreaterEqual(cent_displ, (features_segment.ellipse.centre[0] - arena.centre_x) * 2 / arena.diameter) # test greater than ellipse centre x
+            self.assertGreaterEqual(cent_displ, (features_segment.ellipse.centre[1] - arena.centre_y) * 2 / arena.diameter) # test greater than ellipse centre y
 
-        points = np.array([[-1,0,0,1],[0,1,-1,0]]).T      
-        
-        ellipse = features_second_segment.findMinEnclosingEllipse(points)
-        min_enclosing_ellipse_area = features_second_segment.calcMinEnclosingEllipseArea(ellipse.radii)
-        
-        self.assertAlmostEqual(min_enclosing_ellipse_area, math.pi)
-        
     def test_calcMeanSpeed(self):
 
         df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
@@ -221,57 +213,91 @@ class TestSegmentMethods(unittest.TestCase):
         
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)
         length_first_segment = cs.getSegmentLength(dt_first_segment)
-        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena)
-        #print("features_first_segment.maximum_loop_length:", features_first_segment.maximum_loop_length)
-        self.assertEqual(features_first_segment.mean_speed, 118.75)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena, 0)
         
-    #def test_calcMinSpeed(self)
-        
-#    def test_focusFormula(self):
-#        
-#        area = calc_features.calcArea(points)
-#
-#        focus = calc_features.focusFormula(area, seg_length)
-#
-#        
-#        self.assertAlmostEqual(area, math.pi)
-        
-        
-#    def test_calcFocus(self):
-#        df = self.setUp()
-#        
-#        first_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0, 0)        
-#        second_segment, cum_dist_end_segment = sg.getSegment(df, 10, 0.3, cum_dist_end_segment)
-#        
-#        focus = calc_features.calcFocus(segment)
-        
-    
-        
-#    def test_CalculatingCorrectDistanceBetweenPoints(self):
-#        data = sg.LoadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
-#                           
-#        p1 = sg.GetPointsFromLine(data,0)
-#        p2 = sg.GetPointsFromLine(data,1)
-#        print("p1: ", p1)
-#        print("p2: ", p2)
-#        Distance = sg.CalcDistanceBetweenPoints(p1,p2)
-#        print("Distance: " + str(Distance))
-#        self.assertAlmostEqual(Distance, 1.763539646)
-#       self.assertEqual('foo'.upper(), 'FOO')
+        feat = features_first_segment.getFeature(enums.eFeature.MeanSpeed)      
 
-#    def test_isupper(self):
-#        self.assertTrue('FOO'.isupper())
-#        self.assertFalse('Foo'.isupper())
-#
-#    def test_split(self):
-#        s = 'hello world'
-#        self.assertEqual(s.split(), ['hello', 'world'])
-#        # check that s.split fails when the separator is not a string
-#        with self.assertRaises(TypeError):
-#            s.split(2)
+        self.assertEqual(feat.value, 118.75)
 
-#if __name__ == '__main__':
-#    unittest.main()
+    def test_checkCorrectingRotation(self):
+      
+        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+                                                                #(traj, lseg, ovlp, cum_dist_end_prev)
+        arena = classArena.classArena(df)
+        
+        dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)
+        length_first_segment = cs.getSegmentLength(dt_first_segment)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena, 0)
+        
+        feat = features_first_segment.getFeature(enums.eFeature.MeanSpeed)      
+
+        self.assertEqual(feat.value, 118.75)
+        
+    def test_pathEfficiency(self):
+        
+        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_sum_abs_angles.csv")
+                                                                #(traj, lseg, ovlp, cum_dist_end_prev)
+        arena = classArena.classArena(df)
+        
+        dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)
+        length_first_segment = cs.getSegmentLength(dt_first_segment)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena, 0)
+        
+        feat = features_first_segment.getFeature(enums.eFeature.PathEfficiency)  
+        
+        PathEfficiency_TrueValue = 1.0/7.0
+
+        self.assertEqual(feat.value, PathEfficiency_TrueValue)
+
+#    def test_output_to_csv(self):
+#        
+#        df = preprocess.execute(
+#        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+#        arena = classArena.classArena(df)
+#        
+#        dt_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)
+#        list_segments = None
+#        for i in range(0,20):
+#            dt_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment) 
+#            length_segment = cs.getSegmentLength(dt_segment)
+#            list_segments = [list_segments, sg.Segment(dt_segment, length_segment, arena)]
+            
+    def test_sumAbsAngles(self):
+                                 
+        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_sum_abs_angles.csv")
+                                                                #(traj, lseg, ovlp, cum_dist_end_prev)
+        arena = classArena.classArena(df)
+        
+        dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 7, 0, 0)
+        length_first_segment = cs.getSegmentLength(dt_first_segment)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena, 0)
+        
+        feat = features_first_segment.getFeature(enums.eFeature.SumAbsoluteAngles)      
+
+        self.assertEqual(feat.value, 2 * math.pi)  
+        
+    def test_locationDensity(self):
+        
+        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_locationDensity.csv")
+                                                                #(traj, lseg, ovlp, cum_dist_end_prev)
+        arena = classArena.classArena(df)
+        
+        dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 7, 0, 0)
+        length_first_segment = cs.getSegmentLength(dt_first_segment)
+        features_first_segment = sg.Segment(dt_first_segment, length_first_segment, arena, 0)
+        
+        feat = features_first_segment.getFeature(enums.eFeature.LocationDensity)   
+        
+        SumDistanceBetweenEachPairPoints = 1 + math.sqrt(1**2 + 2**2) + 2 \
+                                            + 2 + math.sqrt(1**2 + 2**2) \
+                                            + 1
+                                            
+        nCr = 6
+        
+        LocationDensity_TrueValue = SumDistanceBetweenEachPairPoints / nCr
+
+        self.assertEqual(feat.value, LocationDensity_TrueValue)         
+        
     
 suite = unittest.TestLoader().loadTestsFromTestCase(TestSegmentMethods)
 unittest.TextTestRunner(verbosity=2).run(suite)
