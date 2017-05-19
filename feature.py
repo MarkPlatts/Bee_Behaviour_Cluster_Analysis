@@ -16,7 +16,7 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 import math
 import loop_tool as lt
-import scipy
+from scipy.special import comb
 #import enumFeature.enumFeature
 
 class Feature:
@@ -25,7 +25,7 @@ class Feature:
     index = -1
     
     def __init__(self, segment, enumFeature):
-
+        self.print_feature_names = False
         self.segment = segment
         self.value = self.calculateFeature()
         self.name = self.featureName()
@@ -38,7 +38,6 @@ class Feature:
     @abstractmethod
     def calculateFeature(self):
         pass
-    
 
         
 class MedianDistanceFromCentre(Feature):
@@ -47,6 +46,7 @@ class MedianDistanceFromCentre(Feature):
         return "MedianDistanceFromCentre"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         median = self.segment.segment_data["DistanceCentre"].median()/(self.segment.arena.diameter/2.0)
         return(median)   
         
@@ -56,6 +56,7 @@ class IQRange(Feature):
         return "IQRange"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         LQ = self.segment.segment_data["DistanceCentre"].quantile(0.25)
         UQ = self.segment.segment_data["DistanceCentre"].quantile(0.75)
         IQRange = (UQ - LQ)/(self.segment.arena.diameter/2.0)
@@ -67,6 +68,7 @@ class Focus(Feature):
         return "Focus"
     
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         return(1 - 4 * self.segment.min_enclosing_ellipse_area/(math.pi*self.segment.segment_length**2))
 
 class Eccentricity(Feature):
@@ -75,6 +77,7 @@ class Eccentricity(Feature):
         return "Eccentricity"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         return(math.sqrt(1 - (self.segment.ellipse_b_axis**2)/(self.segment.ellipse_a_axis**2)))
         
 class MaximumLoop(Feature):
@@ -83,6 +86,7 @@ class MaximumLoop(Feature):
         return "MaximumLoop"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())    
         max_length = 0
         
         segment_data = self.segment.segment_data
@@ -91,15 +95,14 @@ class MaximumLoop(Feature):
         nPoints = segment_data.shape[0] #This is the number of lines to check for intersection
         #print("nPoints:", nPoints)
         for iLines1 in range(0,nPoints-3):
-            
             #create line between current point and next point
             line1 = {'x1': segment_data['x_mm'].iloc[iLines1], 
                      'y1': segment_data['y_mm'].iloc[iLines1],
                      'x2': segment_data['x_mm'].iloc[iLines1+1],
                      'y2': segment_data['y_mm'].iloc[iLines1+1]}
             for iLines2 in range(iLines1+2, nPoints-1): 
-            #loop over subsequent lines check if there is a line that intersects and calculating
-            #the length between them
+                #loop over subsequent lines check if there is a line that intersects and calculating
+                #the length between them
                 #print("iLines2+1:", iLines2+1)
                 line2 = {'x1': segment_data['x_mm'].iloc[iLines2], 
                          'y1': segment_data['y_mm'].iloc[iLines2],
@@ -132,6 +135,7 @@ class InnerRadiusVariation(Feature):
         return "InnerRadiusVariation"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())      
         sg = self.segment
         
         points_distance_centre_ellipse = np.sqrt(np.square(sg.points[:,0]-sg.ellipse.centre[0]) + np.square(sg.points[:,1]-sg.ellipse.centre[1]))
@@ -151,6 +155,7 @@ class CentralDisplacement(Feature):
         return "CentralDisplacement"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         ellipse_centre_x = self.segment.ellipse.centre[0]
         ellipse_centre_y = self.segment.ellipse.centre[1]
         
@@ -168,6 +173,7 @@ class MeanSpeed(Feature):
         return "MeanSpeed"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         mean_speed = np.mean(self.segment.segment_data['Speed'].iloc[1:])        
         return(mean_speed)
         
@@ -177,6 +183,7 @@ class MedianSpeed(Feature):
         return "MedianSpeed"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         median_speed = np.median(self.segment.segment_data['Speed'].iloc[1:])        
         return(median_speed)
         
@@ -186,6 +193,7 @@ class MinSpeed(Feature):
         return "MinSpeed"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         min_speed = np.min(self.segment.segment_data['Speed'].iloc[1:])
         return(min_speed)
         
@@ -194,6 +202,7 @@ class MaxSpeed(Feature):
         return "MaxSpeed"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         max_speed = np.max(self.segment.segment_data['Speed'].iloc[1:])
         return(max_speed)
         
@@ -202,6 +211,7 @@ class IQSpeed(Feature):
         return "IQSpeed"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         UQ = np.percentile(self.segment.segment_data['Speed'].iloc[1:], 75)   
         LQ =  np.percentile(self.segment.segment_data['Speed'].iloc[1:], 25)
         IQR = (UQ - LQ)
@@ -213,6 +223,7 @@ class MeanRotation(Feature):
         return "MeanRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         mean_rotation = np.mean(self.segment.segment_data['Rotation_Corrected'].iloc[1:])
         return(mean_rotation)
         
@@ -222,6 +233,7 @@ class MedianRotation(Feature):
         return "MedianRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         median_rotation = np.median(self.segment.segment_data['Rotation_Corrected'].iloc[1:])
         return(median_rotation)
         
@@ -231,6 +243,7 @@ class MinRotation(Feature):
         return "MinRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         min_rotation = np.min(self.segment.segment_data['Rotation_Corrected'].iloc[1:])
         return(min_rotation)
 
@@ -240,6 +253,7 @@ class MaxRotation(Feature):
         return "MaxRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         max_rotation = np.max(self.segment.segment_data['Rotation_Corrected'].iloc[1:])
         return(max_rotation)
         
@@ -248,6 +262,7 @@ class IQRotation(Feature):
         return "IQRotation"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         UQ = np.percentile(self.segment.segment_data['Rotation_Corrected'].iloc[1:], 75)   
         LQ =  np.percentile(self.segment.segment_data['Rotation_Corrected'].iloc[1:], 25)
         IQR = (UQ - LQ)
@@ -259,6 +274,7 @@ class MeanAbsRotation(Feature):
         return "MeanAbsRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         mean_rotation = np.mean(self.segment.segment_data['Abs_Rotation_Corrected'].iloc[1:])
         return(mean_rotation)
         
@@ -268,6 +284,7 @@ class MedianAbsRotation(Feature):
         return "MedianAbsRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         median_rotation = np.median(self.segment.segment_data['Abs_Rotation_Corrected'].iloc[1:])
         return(median_rotation)
 
@@ -277,6 +294,7 @@ class MinAbsRotation(Feature):
         return "MinAbsRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         min_rotation = np.min(self.segment.segment_data['Abs_Rotation_Corrected'].iloc[1:])
         return(min_rotation)
         
@@ -286,6 +304,7 @@ class MaxAbsRotation(Feature):
         return "MaxAbsRotation"
 
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         max_rotation = np.max(self.segment.segment_data['Abs_Rotation_Corrected'].iloc[1:])
         return(max_rotation)
         
@@ -294,6 +313,7 @@ class IQAbsRotation(Feature):
         return "IQAbsRotation"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         UQ = np.percentile(self.segment.segment_data['Abs_Rotation_Corrected'].iloc[1:], 75)   
         LQ =  np.percentile(self.segment.segment_data['Abs_Rotation_Corrected'].iloc[1:], 25)
         IQR = (UQ - LQ)
@@ -304,6 +324,7 @@ class PathEfficiency(Feature):
         return "PathEfficiency"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         sg = self.segment.segment_data
         return(math.sqrt((sg['x_mm'].iloc[-1] - sg['x_mm'].iloc[0])**2 + (sg['y_mm'].iloc[-1] - sg['y_mm'].iloc[0])**2) / (sg['CumulativeDistance'].iloc[-1] - sg['CumulativeDistance'].iloc[0]))
         
@@ -327,7 +348,7 @@ class SumAbsoluteAngles(Feature):
         return(cross_product)
         
     def calculateFeature(self):
-        
+        if self.print_feature_names: print(self.featureName())
         sg = self.segment.segment_data
         nPoints = sg.shape[0]
         
@@ -338,8 +359,10 @@ class SumAbsoluteAngles(Feature):
             u = self.extractVector(sg, iPoint)
             v = self.extractVector(sg, iPoint+1)
             
-            angle = math.acos(self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v)))
-            
+            if(self.Magnitude(u) * self.Magnitude(v) != 0):
+                angle = math.acos(self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v)))
+            else:
+                angle = 0
             sum_angles = sum_angles + angle
         
         return(sum_angles)
@@ -349,6 +372,7 @@ class LocationDensity(Feature):
         return "LocationDensity"
         
     def calculateFeature(self):
+        if self.print_feature_names: print(self.featureName())
         sg = self.segment.segment_data
         nPoints = sg.shape[0]
         sum_distance_all_points = 0
@@ -362,9 +386,8 @@ class LocationDensity(Feature):
 #                diff_x = EndPoint['x'] - StartPoint['x']
 
                 sum_distance_all_points = sum_distance_all_points + \
-                                math.sqrt((EndPoint['x'] - StartPoint['x'])**2 + (EndPoint['y'] - StartPoint['y'])**2)
-                                
-        ncombinations_distances = scipy.misc.comb(N = nPoints, k = 2, exact=False)
+                                math.sqrt((EndPoint['x'] - StartPoint['x'])**2 + (EndPoint['y'] - StartPoint['y'])**2)               
+        ncombinations_distances = comb(N = nPoints, k = 2, exact=False)
         
         location_density = sum_distance_all_points / ncombinations_distances
         

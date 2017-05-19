@@ -7,28 +7,52 @@ Created on Thu Feb 16 12:57:14 2017
 
 import pandas as pd
 import numpy as np
-import shared
 import constants
 import math
 
 import matplotlib.pyplot as plt
 #import plotly.plotly as py
 
-def execute(data_file_name_path):
-    df = loadData(data_file_name_path)
-    df = addColCumulativeDistance(df)
-    df = addDistanceCentreCol(df)    
+def execute(df, experiment_name):
+    df = addColCumulativeDistance(df) 
     df = addDistance(df)
     df = addSpeed(df)
     df = addRotation(df)
     df = addRotationCorrected(df)
     df = addAbsRotationCorrected(df)
+    df = addExperimentName(df, experiment_name)
+    df = addUsingLight(df)
     return(df)
+    
+def addExperimentName(df, experiment_name):
 
-def loadData(data_file_name_path):
-#Load the data
-    loaded_data = pd.read_csv(data_file_name_path)
-    return loaded_data
+    nRecords = df.shape[0]
+    
+    experiment_name_vec = [experiment_name] * nRecords
+    
+    df = pd.concat([df, pd.DataFrame({"ExperimentName":experiment_name_vec})], axis=1)
+    
+    return(df)
+    
+def addUsingLight(df):
+    
+    nRecords = df.shape[0]
+
+    index_first_row_with_light = findRowFirstLight(df)
+    
+    using_light = [False] * (index_first_row_with_light-1) + [True] * (nRecords - index_first_row_with_light + 1)
+    
+    df = pd.concat([df, pd.DataFrame({"UsingLight":using_light})], axis=1)
+    
+    return(df)
+    
+def findRowFirstLight(df):
+    
+    indices = df[df['light.status'] != 'light.off'].index.tolist()
+    
+    index_first_row_with_light = min(indices)
+    
+    return(index_first_row_with_light)
 
 
 def addColCumulativeDistance(traj):
@@ -54,11 +78,11 @@ def calcTriangleLegs(traj):
     return(triangle_legs)
     
 
-def addDistanceCentreCol(df):
+def addDistanceCentreCol(df, arena):
 #calc distance between all points and the centre
 
     #calc centre
-    x_centre, y_centre = shared.centreArena(df)
+    x_centre, y_centre = arena.centreArena(df)
     
     #calc median distance to centre
     x_dif_centre = df['x_mm'] - x_centre

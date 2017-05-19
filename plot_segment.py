@@ -5,12 +5,11 @@ Created on Tue May 09 16:10:35 2017
 @author: Mark
 """
 
-import create_segment as cs
 import segment as sg
 import matplotlib.pyplot as plt
 import math
-import shared as sh
 import preprocess
+import classArena
 
 #def plotTrajectories(segment):
 #    
@@ -24,7 +23,7 @@ def drawArena():
     #lets say diameter is rounded up
     height = df[['y']].max() - df[['y']].min()
     width = df[['x']].max() - df[['x']].min()
-    centre = sh.centreArena(df)
+    centre = classArena.centreArena(df)
     #print "height:", height, "  width:", width
     #calc x, y as theta goes from 0->360
     

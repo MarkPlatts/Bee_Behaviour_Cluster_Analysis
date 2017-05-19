@@ -12,12 +12,12 @@ import csv
 #def print2CSV(list_segments):
 def output(list_segments):
     
-    ofile = open("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/test_writing_2_csv.csv", "wb")
+    ofile = open("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/test_writing_3_csv.csv", "wb")
     writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
     
     #write the column headers
     seg1 = list_segments[0] #get the first segment
-    row = ["SegmentIndex"]
+    row = ["SegmentID", "Experiment", "UsingLight", "FileName"]
     for iFeature in seg1.features:
         row = row + [iFeature.featureName()]
         
@@ -25,7 +25,7 @@ def output(list_segments):
     
     #write the segment values    
     for iSeg in list_segments:
-        row = [iSeg.index]
+        row = [iSeg.segmentID, iSeg.experiment_name, iSeg.using_light, iSeg.filename]
         for iFeature in iSeg.features:
             row = row + [iFeature.value]
         writer.writerow(row)
