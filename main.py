@@ -31,6 +31,7 @@ def createSegments(df, segment_length = 150, overlap = 0.7):
     while True:
         iSegment = iSegment + 1
         print(iSegment)
+        #if(iSegment > 180): continue
         temp_segment = sg.Segment(traj = df, lseg = segment_length, ovlp = overlap, cum_dist_end_prev = temp_segment.last_value_segment, arena = arena)
         list_segments.append(temp_segment)
         #print(temp_segment.getFeature(enums.eFeature.LocationDensity).value)
@@ -90,6 +91,8 @@ temp_list_segments = segmentIndividualFilenames(df = df_saline, exp_name = "Sali
 list_segments = list_segments + temp_list_segments
 
 print2csv.output(list_segments)
+
+print2csv.output_xy(list_segments)
 
 
 

@@ -89,7 +89,7 @@ class MaximumLoop(Feature):
         if self.print_feature_names: print(self.featureName())    
         max_length = 0
         
-        segment_data = self.segment.segment_data
+        segment_data = self.segment.segment_data.drop_duplicates(subset=['x_mm', 'y_mm'])
         
         #find out how many points their are
         nPoints = segment_data.shape[0] #This is the number of lines to check for intersection
@@ -349,7 +349,7 @@ class SumAbsoluteAngles(Feature):
         
     def calculateFeature(self):
         if self.print_feature_names: print(self.featureName())
-        sg = self.segment.segment_data
+        sg = self.segment.segment_data.drop_duplicates(subset=['x_mm', 'y_mm'])
         nPoints = sg.shape[0]
         
         sum_angles = 0
@@ -358,9 +358,17 @@ class SumAbsoluteAngles(Feature):
             
             u = self.extractVector(sg, iPoint)
             v = self.extractVector(sg, iPoint+1)
-            
+#            print("u:", u)
+#            print("v:", v)
+            #print("self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v)):", self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v)))
             if(self.Magnitude(u) * self.Magnitude(v) != 0):
-                angle = math.acos(self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v)))
+                assert abs(self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v))) < 1.00000000001, "the input to acos is unreasonably outside the domain"
+                if self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v))>1:
+                    angle = 0
+                elif self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v))<-1:
+                    angle = math.pi
+                else:
+                    angle = math.acos(self.crossProduct(u, v) / (self.Magnitude(u) * self.Magnitude(v)))
             else:
                 angle = 0
             sum_angles = sum_angles + angle
@@ -373,7 +381,7 @@ class LocationDensity(Feature):
         
     def calculateFeature(self):
         if self.print_feature_names: print(self.featureName())
-        sg = self.segment.segment_data
+        sg = self.segment.segment_data.drop_duplicates(subset=['x_mm', 'y_mm'])
         nPoints = sg.shape[0]
         sum_distance_all_points = 0
         
