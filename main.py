@@ -9,10 +9,7 @@ import segment as sg
 import preprocess
 import classArena
 import print2csv
-import plot_segment as ps
 import pandas as pd
-import numpy as np
-import enums
 import filehandling
 
 ## plot
@@ -78,21 +75,23 @@ arena = classArena.classArena(dfs_combined)
 
 list_segments = []
 
-print("NT data")
-temp_list_segments = segmentIndividualFilenames(df = df_nt, exp_name = "NT")
-list_segments = list_segments + temp_list_segments
+#print("NT data")
+#temp_list_segments = segmentIndividualFilenames(df = df_nt, exp_name = "NT")
+#list_segments = list_segments + temp_list_segments
 
 print("Procaine data")
 temp_list_segments = segmentIndividualFilenames(df = df_procaine, exp_name = "Procaine")
 list_segments = list_segments + temp_list_segments
 
-print("Saline data")
-temp_list_segments = segmentIndividualFilenames(df = df_saline, exp_name = "Saline")
-list_segments = list_segments + temp_list_segments
+#print("Saline data")
+#temp_list_segments = segmentIndividualFilenames(df = df_saline, exp_name = "Saline")
+#list_segments = list_segments + temp_list_segments
 
-print2csv.output(list_segments)
+filepath = "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/test_removing_duplicates/"
 
-print2csv.output_xy(list_segments)
+print2csv.output(list_segments, filepath)
+
+print2csv.output_xy(list_segments, filepath)
 
 
 

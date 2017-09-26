@@ -10,9 +10,9 @@ import csv
 #Create CSV file
 
 #def print2CSV(list_segments):
-def output(list_segments):
+def output(list_segments, filepath):
     
-    ofile = open("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/segment_features.csv", "wb")
+    ofile = open(filepath + "segment_features.csv", "wb")
     writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
     
     #write the column headers
@@ -32,9 +32,9 @@ def output(list_segments):
     
     ofile.close()
 
-def output_xy(list_segments):
+def output_xy(list_segments, filepath):
     
-    ofile = open("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/segment_xys.csv", "wb")
+    ofile = open(filepath + "segment_xys.csv", "wb")
     writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
     
     #write the column headers

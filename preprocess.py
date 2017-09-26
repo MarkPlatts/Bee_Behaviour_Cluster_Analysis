@@ -10,18 +10,26 @@ import numpy as np
 import constants
 import math
 
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #import plotly.plotly as py
 
 def execute(df, experiment_name):
+    df = removeDuplicateXYRecords(df)
     df = addColCumulativeDistance(df) 
     df = addDistance(df)
-    df = addSpeed(df)
-    df = addRotation(df)
-    df = addRotationCorrected(df)
-    df = addAbsRotationCorrected(df)
+#    df = addSpeed(df)
+#    df = addRotation(df)
+#    df = addRotationCorrected(df)
+#    df = addAbsRotationCorrected(df)
     df = addExperimentName(df, experiment_name)
     df = addUsingLight(df)
+
+    return(df)
+    
+def removeDuplicateXYRecords(df):
+    
+    df = df.drop_duplicates(['x_mm','y_mm'], keep = 'first')
+    df = df.reset_index(drop=True)
     return(df)
     
 def addExperimentName(df, experiment_name):
