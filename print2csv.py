@@ -6,22 +6,27 @@ Created on Tue May 09 14:19:06 2017
 """
 
 import csv
+import os.path
+
 
 #Create CSV file
 
 #def print2CSV(list_segments):
 def output(list_segments, filepath):
     
-    ofile = open(filepath + "segment_features.csv", "wb")
-    writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
+    seg1 = list_segments[0]
     
-    #write the column headers
-    seg1 = list_segments[0] #get the first segment
-    row = ["SegmentID", "Experiment", "UsingLight", "FileName"]
-    for iFeature in seg1.features:
-        row = row + [iFeature.featureName()]
+    if not os.path.isfile(filepath):
         
-    writer.writerow(row)    
+        ofile = open(filepath + "segment_features.csv", "wb")
+        writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
+        
+        #write the column headers
+        row = ["SegmentID", "Experiment", "UsingLight", "FileName"]
+        for iFeature in seg1.features:
+            row = row + [iFeature.featureName()]
+            
+        writer.writerow(row)    
     
     #write the segment values    
     for iSeg in list_segments:
