@@ -6,13 +6,13 @@ Created on Tue Mar 07 15:43:34 2017
 """
 
 from __future__ import division
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-import sys
+#from mpl_toolkits.mplot3d import Axes3D
+#import matplotlib.pyplot as plt
+#import sys
 import numpy as np
 from numpy import linalg
-from random import random
-import math
+#from random import random
+#import math
 
 
 class EllipseTool:
