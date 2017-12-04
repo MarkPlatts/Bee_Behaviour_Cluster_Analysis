@@ -116,7 +116,7 @@ class Segment:
                          feature.IQRange(self, enums.eFeature.IQRange),
                          feature.Focus(self, enums.eFeature.Focus),
                          feature.Eccentricity(self, enums.eFeature.Eccentricity),
-                         feature.MaximumLoop(self, enums.eFeature.MaximumLoop),
+                         #feature.MaximumLoop(self, enums.eFeature.MaximumLoop),
                          feature.InnerRadiusVariation(self, enums.eFeature.InnerRadiusVariation),
                          feature.CentralDisplacement(self, enums.eFeature.CentralDisplacement),
 #                         feature.MeanSpeed(self, enums.eFeature.MeanSpeed),
