@@ -16,9 +16,9 @@ def output(list_segments, filepath):
     
     seg1 = list_segments[0]
     
-    if not os.path.isfile(filepath):
+    if not os.path.isfile(os.path.join(filepath, "segment_features.csv")):
         
-        ofile = open(filepath + "segment_features.csv", "wb")
+        ofile = open(os.path.join(filepath, "segment_features.csv"), "wb")
         writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
         
         #write the column headers
@@ -27,6 +27,10 @@ def output(list_segments, filepath):
             row = row + [iFeature.featureName()]
             
         writer.writerow(row)    
+        
+    else:
+        ofile = open(os.path.join(filepath, "segment_features.csv"), "ab")
+        writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)     
     
     #write the segment values    
     for iSeg in list_segments:
@@ -38,17 +42,19 @@ def output(list_segments, filepath):
     ofile.close()
 
 def output_xy(list_segments, filepath):
-    
-    ofile = open(filepath + "segment_xys.csv", "wb")
-    writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
-    
-    #write the column headers
-#    seg1 = list_segments[0] #get the first segment
-    row = ["SegmentID", "Experiment", "UsingLight", "FileName", "x_mm", "y_mm"]
-#    for iFeature in seg1.features:
-#        row = row + [iFeature.featureName()]
+
+    if not os.path.isfile(os.path.join(filepath,"segment_xys.csv")):
         
-    writer.writerow(row)    
+        ofile = open(os.path.join(filepath,"segment_xys.csv"), "wb")
+        writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
+        
+        row = ["SegmentID", "Experiment", "UsingLight", "FileName", "x_mm", "y_mm"]
+        
+        writer.writerow(row)    
+        
+    else:
+        ofile = open(os.path.join(filepath,"segment_xys.csv"), "ab")
+        writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL) 
     
     #write the segment xys    
     for iSeg in list_segments:
