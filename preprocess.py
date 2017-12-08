@@ -13,7 +13,7 @@ import math
 #import matplotlib.pyplot as plt
 #import plotly.plotly as py
 
-def execute(df, experiment_name):
+def execute(df, experiment_name, arena):
     df = removeDuplicateXYRecords(df)
     df = addColCumulativeDistance(df) 
     df = addDistance(df)
@@ -23,6 +23,7 @@ def execute(df, experiment_name):
 #    df = addAbsRotationCorrected(df)
     df = addExperimentName(df, experiment_name)
     df = addUsingLight(df)
+    df = addDistanceCentreCol(df, arena)
 
     return(df)
     

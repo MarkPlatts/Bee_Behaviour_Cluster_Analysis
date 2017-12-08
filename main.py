@@ -43,14 +43,6 @@ def sendSectionDfSegment(df, using_light, arena, segment_length, overlap):
     list_segments = createSegments(df_light_selected, arena = arena, segment_length = segment_length, overlap = overlap)
     return(list_segments)
     
-def createListSegments(df, arena, segment_length, overlap):
-    list_segments = []
-    
-    df = preprocess.addDistanceCentreCol(df, arena)
-    list_segments = list_segments + sendSectionDfSegment(df = df, using_light = True, arena = arena, segment_length = segment_length, overlap = overlap)
-    
-    return(list_segments)
-    
 def segmentIndividualFilenames(df, exp_name, arena, segment_length, overlap):
     list_segments = []
     unique_filename = df.filename.unique()
@@ -58,8 +50,8 @@ def segmentIndividualFilenames(df, exp_name, arena, segment_length, overlap):
         logging.info(".....................Filename: " + iFile + ".....................")
         df_file = df[df['filename'] == iFile]
         df_file.reset_index(drop = True, inplace = True)
-        df_file = preprocess.execute(df_file, experiment_name = exp_name)
-        temp_list_segments = createListSegments(df = df_file, arena = arena, segment_length = segment_length, overlap = overlap)
+        df_file = preprocess.execute(df_file, experiment_name = exp_name, arena = arena)
+        temp_list_segments = sendSectionDfSegment(df = df_file, using_light = True, arena = arena, segment_length = segment_length, overlap = overlap)
         list_segments = list_segments + temp_list_segments
     return list_segments
 
@@ -77,9 +69,9 @@ def process_all_dfs(data_nt, data_procaine, data_saline, data_folder_path, folde
     if not os.path.exists(path_folder_to_save):
         os.makedirs(path_folder_to_save)        
        
-    process_df("NT", data_nt, path_folder_to_save, arena, seg_length, overlap = overlap)
+#    process_df("NT", data_nt, path_folder_to_save, arena, seg_length, overlap = overlap)
     process_df("Procaine", data_procaine, path_folder_to_save, arena, seg_length, overlap = overlap)
-    process_df("Saline", data_saline, path_folder_to_save, arena, seg_length, overlap = overlap)
+#    process_df("Saline", data_saline, path_folder_to_save, arena, seg_length, overlap = overlap)
 
 
 
