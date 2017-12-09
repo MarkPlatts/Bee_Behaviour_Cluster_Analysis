@@ -10,6 +10,7 @@ import preprocess
 import print2csv
 import os.path#
 import logging
+import pdb
 
 ## plot
 #if False:
@@ -29,7 +30,8 @@ def createSegments(df, arena, segment_length, overlap):
         iSegment = iSegment + 1
         logging.info("Segment: " + str(iSegment))
         temp_segment = sg.Segment(traj = df, lseg = segment_length, ovlp = overlap, cum_dist_end_prev = temp_segment.last_value_segment, arena = arena)
-        list_segments.append(temp_segment)
+        if temp_segment.segment_data.shape[0] > 2:
+            list_segments.append(temp_segment)
         if temp_segment.end_of_trajectory:
             break
     return(list_segments)  
@@ -69,9 +71,9 @@ def process_all_dfs(data_nt, data_procaine, data_saline, data_folder_path, folde
     if not os.path.exists(path_folder_to_save):
         os.makedirs(path_folder_to_save)        
        
-#    process_df("NT", data_nt, path_folder_to_save, arena, seg_length, overlap = overlap)
+    process_df("NT", data_nt, path_folder_to_save, arena, seg_length, overlap = overlap)
     process_df("Procaine", data_procaine, path_folder_to_save, arena, seg_length, overlap = overlap)
-#    process_df("Saline", data_saline, path_folder_to_save, arena, seg_length, overlap = overlap)
+    process_df("Saline", data_saline, path_folder_to_save, arena, seg_length, overlap = overlap)
 
 
 

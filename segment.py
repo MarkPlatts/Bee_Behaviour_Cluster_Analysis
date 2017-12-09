@@ -46,7 +46,8 @@ class Segment:
         self.using_light = first_row_segment['UsingLight']
         
         #calculations
-        self.calcFeatures()    
+        if self.segment_data.shape[0]>2:
+            self.calcFeatures()    
         
     #helper methods =======================================================================================
                 
