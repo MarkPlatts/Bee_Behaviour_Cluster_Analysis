@@ -22,14 +22,24 @@ def createSegments(df, arena, segment_length, overlap):
     iSegment = 0
     logging.info("Segment: " + str(iSegment))
     cum_dist_end_prev = df.iloc[0]['CumulativeDistance']
-    temp_segment = sg.Segment(traj = df, lseg = segment_length, ovlp = 0, cum_dist_end_prev = cum_dist_end_prev, arena = arena)
+    temp_segment = sg.Segment(traj = df, 
+                              lseg = segment_length,
+                              ovlp = 0, 
+                              cum_dist_end_prev = cum_dist_end_prev, 
+                              arena = arena)
     list_segments = [temp_segment]
     
 
     while True:
         iSegment = iSegment + 1
+#        if iSegment == 1000:
+#            pdb.set_trace()
         logging.info("Segment: " + str(iSegment))
-        temp_segment = sg.Segment(traj = df, lseg = segment_length, ovlp = overlap, cum_dist_end_prev = temp_segment.last_value_segment, arena = arena)
+        temp_segment = sg.Segment(traj = df, 
+                                  lseg = segment_length, 
+                                  ovlp = overlap, 
+                                  cum_dist_end_prev = temp_segment.last_value_segment, 
+                                  arena = arena)
         if temp_segment.segment_data.shape[0] > 2:
             list_segments.append(temp_segment)
         if temp_segment.end_of_trajectory:

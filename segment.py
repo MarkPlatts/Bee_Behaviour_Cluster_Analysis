@@ -76,13 +76,13 @@ class Segment:
         #find the beginning of this segment
         if cum_dist_end_prev != 0:
 
-            distance_to_previous_point = traj['Distance'][traj['CumulativeDistance'] == cum_dist_end_prev].index[0]
-            if distance_to_previous_point >= lseg:
-                value_just_below = cum_dist_end_prev    
-            else:
-                max_cum_dist_start_second = cum_dist_end_prev - lseg*ovlp
-                values_lesser = cumdist[cumdist <= max_cum_dist_start_second]
-                value_just_below = values_lesser.iloc[-1]
+#            distance_to_previous_point = traj['Distance'][traj['CumulativeDistance'] == cum_dist_end_prev].iloc[0]
+#            if distance_to_previous_point >= lseg:
+#                value_just_below = cum_dist_end_prev    
+#            else:
+            max_cum_dist_start_second = cum_dist_end_prev - lseg*ovlp
+            values_greater = cumdist[cumdist > max_cum_dist_start_second]
+            value_just_below = values_greater.iloc[0]
                 
             start_seg_index = cumdist[cumdist==value_just_below].index[0]
             
