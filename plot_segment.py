@@ -8,6 +8,8 @@ Created on Tue May 09 16:10:35 2017
 import matplotlib.pyplot as plt
 import math
 import classArena
+import pandas as pd
+import os
     
 def drawArena(df):
     
@@ -35,12 +37,22 @@ def plot_segment(seg):
     
     plt.plot(seg['x_mm'], seg['y_mm'])
     
+def load_df_for_arena_dims(path):
+    df_nt = pd.read_csv(os.path.join(path, "Data/bee-data_NT.csv"))
+    df_procaine = pd.read_csv(os.path.join(path, "Data/bee-data_procaine.csv"))
+    df_saline = pd.read_csv(os.path.join(path, "Data/bee-data_saline.csv"))
+    x = pd.concat([df_nt, df_procaine, df_saline], axis=0)
+    return(x)
+    
 #df_plot_arena: this is used to find the dimensions of the arena so it can be plotted
 def plot_all(df_plot_arena, seg, index, n_rows, n_cols, title): 
     
     plt.subplot(n_rows, n_cols, index)
     
-    plt.title(title, fontsize = 5)
+    font = {'weight' : 'normal',
+        'size'   : 12}
+    plt.title(title, **font)
+    plt.axis('off')
     
     drawArena(df_plot_arena)
     
