@@ -1,0 +1,79 @@
+---
+title: "What happens if we only use positional or geometric features?"
+author: "Mark Platts"
+date: "5th September 2017"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+Purpose:
+In this analysis we will apply the k-means algorithm twice each time for two subsets of features. In the first we will use only the geometric and in the second we will only look at positional.
+
+Load necessary libraries & sources
+```{r}
+library(data.table)
+library(stringr)
+library(ggplot2)
+source("helper_functions.R")
+```
+
+Load data into memory and check that it doesn't contain any NA's
+```{r}
+dt <- fread("../Output_features/segment_features.csv",
+            stringsAsFactors = TRUE)
+
+print(any(is.na(dt)))
+
+dt_xy <- fread("../Output_features/segment_xys.csv", head = TRUE)
+```
+Splitting into datasets with only positional and geometric features
+```{r}
+descripter_columns   <- c("SegmentID", "Experiment", "UsingLight", "FileName")
+geometric_features   <- c("Focus", "Eccentricity", "PathEfficiency", "SumAbsoluteAngles")
+positional_features  <- c("MedianDistanceFromCentre", "IQRange", "InnerRadiusVariation", "CentralDisplacement")
+```
+
+# Geometric features
+
+Three clusters:
+```{r, fig.width=5,fig.height=10}
+source("helper_functions.R")
+set.seed(1) #the following code take a random sample of the segments
+dt_geometric <- dt[, c(descripter_columns, geometric_features), with = FALSE]
+km.out <- kmeans(x = scale(dt_geometric[, (geometric_features), with = FALSE]), centers = 3, nstart = 20)
+dt_geometric[, cluster := km.out$cluster]
+plot_cluster(features = dt_geometric, xy = dt_xy, nSegments = 5)
+```
+
+5 clusters:
+```{r, fig.width=9,fig.height=20}
+source("helper_functions.R")
+set.seed(1) #the following code take a random sample of the segments
+dt_geometric <- dt[, c(descripter_columns, geometric_features), with = FALSE]
+km.out <- kmeans(x = scale(dt_geometric[, (geometric_features), with = FALSE]), centers = 5, nstart = 20)
+dt_geometric[, cluster := km.out$cluster]
+plot_cluster(features = dt_geometric, xy = dt_xy, nSegments = 10)
+```
+
+# Positional features
+
+Three clusters:
+```{r, fig.width=5,fig.height=10}
+source("helper_functions.R")
+set.seed(1) #the following code take a random sample of the segments
+dt_positional <- dt[, c(descripter_columns, positional_features), with = FALSE]
+km.out <- kmeans(x = scale(dt_positional[, (positional_features), with = FALSE]), centers = 3, nstart = 20)
+dt_positional[, cluster := km.out$cluster]
+plot_cluster(features = dt_positional, xy = dt_xy, nSegments = 5)
+```
+
+Five clusters:
+```{r, fig.width=9,fig.height=10}
+source("helper_functions.R")
+set.seed(1) #the following code take a random sample of the segments
+dt_positional <- dt[, c(descripter_columns, positional_features), with = FALSE]
+km.out <- kmeans(x = scale(dt_positional[, (positional_features), with = FALSE]), centers = 5, nstart = 20)
+dt_positional[, cluster := km.out$cluster]
+plot_cluster(features = dt_positional, xy = dt_xy, nSegments = 5)
+```

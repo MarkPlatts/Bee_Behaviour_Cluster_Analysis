@@ -1,0 +1,83 @@
+---
+title: "Using the silhouette technique to select the optimum number of clusters and principle components"
+author: "Mark Platts"
+date: "21st October 2017"
+output: html_notebook
+---
+
+Load necessary libraries & sources
+```{r}
+library(data.table)
+library(stringr)
+library(ggplot2)
+library(cluster)
+
+source("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Cluster_Analysis/helper_functions.R")
+```
+
+Load data into memory and check that it doesn't contain any NA's
+```{r, message = F}
+dt <- fread("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/segment_features.csv",
+            stringsAsFactors = TRUE)
+
+print(any(is.na(dt)))
+
+dt_xy <- fread("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/segment_xys.csv", head = TRUE)
+```
+
+Since I believe it unlikely that speed will determine the appearance of a segment for now we will exclude it.
+
+```{r}
+dt_names <- names(dt)
+speed_names <- str_subset(dt_names, "Speed")
+dt_mod <- dt[, (speed_names) := NULL]
+```
+
+There is likely a lot of correlation of variables. To improve efficiency of calculating the kmeans I will use PCA
+
+```{r}
+pr.out <- prcomp(dt_mod[, MedianDistanceFromCentre:SumAbsoluteAngles], scale = TRUE)
+```
+
+Looks like the first 2 components will be pretty good. lets take a look at what it looks like in 2-d plot.
+
+```{r}
+plot(pr.out$x[, "PC1"], pr.out$x[, "PC2"], pch = ".")
+```
+
+Let's zoom in and see if we can see anything interesting happening:
+```{r}
+plot(pr.out$x[, "PC1"], pr.out$x[, "PC2"], pch = ".", xlim = c(-5,7))
+```
+
+```{r}
+plot(pr.out$x[, "PC1"], pr.out$x[, "PC2"], pch = ".", xlim = c(-5,0), ylim = c(-3,1))
+```
+
+There isn't any clear clustering going on here, but something unusual is happening. I do think that we will get a clearer picture once a voting system has been applied to each point to determine the cluster it is in and then to plot them; this should clear away some of the points inbetween clusters and create a clearer distinction.
+
+Let's try the silhouette technique to select number of principal components and clusters.
+
+Clustering with k = 1, 2,.., 15
+```{r}
+wss <- 0
+min_n_clusters <- 5
+max_n_clusters <- 10
+min_n_principal_components <- 1
+max_n_principal_components <- 3
+
+km.out <- kmeans(x = pr.out$x[, 1:2], centers = 1, nstart = 20, algorithm = "Lloyd", iter.max = 200)
+sil <- silhouette(x = km.out$cluster, dist = dist(pr.out$x[, 1:2]))
+plot(sil, col=1, border = NA)
+
+for(Kn in min_n_clusters:max_n_clusters){
+  for(Pn in min_n_principal_components:max_n_principal_components){
+      km.out <- kmeans(x = pr.out$x[, 1:Pn], centers = Kn, nstart = 20, algorithm = "Lloyd", iter.max = 200)
+      sil <- silhouette(x = km.out$cluster, dist = dist(pr.out$x[, 1:Pn]))
+      plot(sil, col = 1:Kn, border = NA, main = paste0(Kn, " clusters. ", Pn, " principal components"))
+  }
+}
+```
+
+
+
