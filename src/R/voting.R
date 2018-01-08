@@ -1,6 +1,7 @@
 library(dplyr)
 library(data.table)
 library(tidyr)
+library(here)
 
 determine_cluster <- function(x){
   if(any(is.na(x))) return(NA)
@@ -44,7 +45,7 @@ perform_voting <- function(df){
 segment_length <- 150
 n_clusters <- 5
 
-path <- paste0("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/length", segment_length, "/")
+path <- paste0(here(), "/Data/length", segment_length, "/")
 df <- read.csv(paste0(path, "segment_xys_with_clust_name_", n_clusters, "_clusters.csv"))
 
 dt <- perform_voting(df)

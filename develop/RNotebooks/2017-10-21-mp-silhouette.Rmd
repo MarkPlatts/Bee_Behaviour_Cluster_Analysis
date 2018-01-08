@@ -11,18 +11,19 @@ library(data.table)
 library(stringr)
 library(ggplot2)
 library(cluster)
+library(here)
 
-source("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Cluster_Analysis/helper_functions.R")
+source(here("src/R/helper_functions.R"))
 ```
 
 Load data into memory and check that it doesn't contain any NA's
 ```{r, message = F}
-dt <- fread("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/segment_features.csv",
+dt <- fread(here("Data/Output_features/segment_features.csv"),
             stringsAsFactors = TRUE)
 
 print(any(is.na(dt)))
 
-dt_xy <- fread("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/Output_features/segment_xys.csv", head = TRUE)
+dt_xy <- fread(here("Data/Output_features/segment_xys.csv"), head = TRUE)
 ```
 
 Since I believe it unlikely that speed will determine the appearance of a segment for now we will exclude it.
