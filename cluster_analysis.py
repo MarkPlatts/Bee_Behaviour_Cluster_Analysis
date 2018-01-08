@@ -19,6 +19,7 @@ import find_n_neighbours as n_neigh
 #n_clusters = 5
 #n_nearest_neighbours = 6
 
+
 def plot_n_nearest(seg_length, n_clusters, n_nearest_neighbours, root_path):
     
     #plt.rcParams['figure.figsize'] = [8.0, 4.0]
