@@ -47,5 +47,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Other files to ignore
+# Other files & folders to ignore
 *.pyc
+.Rproj.user
+figs
+Data/
+Output/
