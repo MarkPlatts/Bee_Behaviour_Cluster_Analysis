@@ -12,6 +12,10 @@ import math
 import shared as sh
 import preprocess
 
+from os import chdir, getcwd
+wd=getcwd()
+chdir(wd)
+
 #def plotTrajectories(segment):
 #    
 #    #Extract the x and y values for the segment
@@ -20,7 +24,7 @@ import preprocess
 def drawArena():
     
 
-    df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
+    df = preprocess.loadData("../../Data/bee-data_NT.csv")
     df = preprocess.addColCumulativeDistance(df)
     df = preprocess.addDistanceCentreCol(df)
     
@@ -60,7 +64,7 @@ cum_dist_end_prev = 600
 drawArena()
 
     
-df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
+df = preprocess.loadData("../../Data/bee-data_NT.csv")
 df = preprocess.addColCumulativeDistance(df)
 df = preprocess.addDistanceCentreCol(df)
 

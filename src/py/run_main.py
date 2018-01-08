@@ -11,11 +11,15 @@ import main
 import pandas as pd
 import logging
 import os
+
+from os import chdir, getcwd
+wd=getcwd()
+chdir(wd)
  
 # add filemode="w" to overwrite
 
 #initialisation
-datapath = "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/"
+datapath = "../../Data/"
 
 logging.basicConfig(filename=os.path.join(datapath, "sample.log"), level=logging.DEBUG, filemode = "w")
 

@@ -7,11 +7,14 @@ Created on Tue Mar 07 16:25:05 2017
 
 import segment as sg
 import preprocess
-import calc_features
 import ellipse_tool as et
 import numpy as np
 
-df = preprocess.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/bee-data_NT.csv")
+from os import chdir, getcwd
+wd=getcwd()
+chdir(wd)
+
+df = preprocess.loadData("../../Data/bee-data_NT.csv")
 
 df = preprocess.addColCumulativeDistance(df)
 df = preprocess.addDistanceCentreCol(df)

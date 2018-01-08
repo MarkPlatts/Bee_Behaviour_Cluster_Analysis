@@ -11,10 +11,13 @@ import os
 import pandas as pd
 #import plot_segment
 #import find_n_neighbours as n_neigh
+from os import chdir, getcwd
+wd=getcwd()
+chdir(wd)
 
-def create_file_with_cluster_membership(seg_length, n_clusters, root_path):
+def create_file_with_cluster_membership(seg_length, n_clusters):
     
-    path = os.path.join(root_path, "Data/length" + str(seg_length))
+    path = os.path.join("../../Data/length" + str(seg_length))
     
     df_features = pd.read_csv(os.path.join(path, "segment_features.csv"))
     df_xy = pd.read_csv(os.path.join(path, "segment_xys.csv"))
@@ -33,6 +36,6 @@ def create_file_with_cluster_membership(seg_length, n_clusters, root_path):
     
     df_xy.to_csv(path_or_buf = os.path.join(path, 'segment_xys_with_clust_name_' + str(n_clusters) + '_clusters.csv'))
              
-root_path = "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/"
+#root_path = "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/"
 
-create_file_with_cluster_membership(seg_length = 150, n_clusters = 5, root_path = root_path)
+create_file_with_cluster_membership(seg_length = 150, n_clusters = 5)

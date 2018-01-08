@@ -14,15 +14,18 @@ import numpy as np
 import create_segment as cs
 import classArena
 import enums
-import print2csv
+
+from os import chdir, getcwd
+wd=getcwd()
+chdir(wd)
 
 class TestSegmentMethods(unittest.TestCase):
             
         
     def test_MaximumLoopLength(self):
         
-        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
-        #df = self.loadData("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+        df = preprocess.execute("../../Data/TestData/bee-data_NT_test_maxloop.csv")
+        #df = self.loadData("../../Data/TestData/bee-data_NT_test_maxloop.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
         arena = classArena.classArena(df)
         
@@ -36,7 +39,7 @@ class TestSegmentMethods(unittest.TestCase):
     
     def test_FindingCorrectSecondSegment(self):      
         
-        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        df = preprocess.execute("../../Data/TestData/bee-data_NT_test.csv")
         
         first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
         second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment)
@@ -47,7 +50,7 @@ class TestSegmentMethods(unittest.TestCase):
     def test_DistancePoint100FromCentre(self):
         
         df = preprocess.execute(
-        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        "../../Data/TestData/bee-data_NT_test.csv")
         
         Distance = df['DistanceCentre'].iloc[99]
         print("Distance:", Distance)
@@ -56,7 +59,7 @@ class TestSegmentMethods(unittest.TestCase):
     def test_MedianDistanceCentre(self):
         
         df = preprocess.execute(
-        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        "../../Data/TestData/bee-data_NT_test.csv")
         arena = classArena.classArena(df)        
         
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
@@ -71,7 +74,7 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_iQRangeDistanceCentre(self):
         df = preprocess.execute(
-        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        "../../Data/TestData/bee-data_NT_test.csv")
         arena = classArena.classArena(df)        
         
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
@@ -86,7 +89,7 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_getSegmentLength(self):
         df = preprocess.execute(
-        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        "../../Data/TestData/bee-data_NT_test.csv")
 
         first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
         second_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0.3, cum_dist_end_segment) 
@@ -97,7 +100,7 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_areaFormula(self):
         df = preprocess.execute(
-        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        "../../Data/TestData/bee-data_NT_test.csv")
         arena = classArena.classArena(df)        
         
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)        
@@ -190,7 +193,7 @@ class TestSegmentMethods(unittest.TestCase):
     def test_calcCentralDisplacement_withinCorrectRange(self): 
         
         df = preprocess.execute(
-        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+        "../../Data/TestData/bee-data_NT_test.csv")
         arena = classArena.classArena(df)
         
         dt_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)
@@ -207,7 +210,7 @@ class TestSegmentMethods(unittest.TestCase):
 
     def test_calcMeanSpeed(self):
 
-        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+        df = preprocess.execute("../../Data/TestData/bee-data_NT_test_maxloop.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
         arena = classArena.classArena(df)
         
@@ -221,7 +224,7 @@ class TestSegmentMethods(unittest.TestCase):
 
     def test_checkCorrectingRotation(self):
       
-        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_maxloop.csv")
+        df = preprocess.execute("../../Data/TestData/bee-data_NT_test_maxloop.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
         arena = classArena.classArena(df)
         
@@ -235,7 +238,7 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_pathEfficiency(self):
         
-        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_sum_abs_angles.csv")
+        df = preprocess.execute("../../Data/TestData/bee-data_NT_test_sum_abs_angles.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
         arena = classArena.classArena(df)
         
@@ -252,7 +255,7 @@ class TestSegmentMethods(unittest.TestCase):
 #    def test_output_to_csv(self):
 #        
 #        df = preprocess.execute(
-#        "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test.csv")
+#        "../../Data/TestData/bee-data_NT_test.csv")
 #        arena = classArena.classArena(df)
 #        
 #        dt_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df, 10, 0, 0)
@@ -264,7 +267,7 @@ class TestSegmentMethods(unittest.TestCase):
             
     def test_sumAbsAngles(self):
                                  
-        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_sum_abs_angles.csv")
+        df = preprocess.execute("../../Data/TestData/bee-data_NT_test_sum_abs_angles.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
         arena = classArena.classArena(df)
         
@@ -278,7 +281,7 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_locationDensity(self):
         
-        df = preprocess.execute("C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/Data/TestData/bee-data_NT_test_locationDensity.csv")
+        df = preprocess.execute("../../Data/TestData/bee-data_NT_test_locationDensity.csv")
                                                                 #(traj, lseg, ovlp, cum_dist_end_prev)
         arena = classArena.classArena(df)
         

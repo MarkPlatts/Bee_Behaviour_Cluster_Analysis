@@ -8,7 +8,6 @@ Created on Sat Dec 30 08:33:59 2017
 #initialisation start ====================================================================
 
 import perform_kmeans as pkm
-import matplotlib.pyplot as plt
 import os
 import pandas as pd
 import plot_segment
@@ -20,16 +19,16 @@ import find_n_neighbours as n_neigh
 #n_nearest_neighbours = 6
 
 
-def plot_n_nearest(seg_length, n_clusters, n_nearest_neighbours, root_path):
+def plot_n_nearest(seg_length, n_clusters, n_nearest_neighbours):
     
     #plt.rcParams['figure.figsize'] = [8.0, 4.0]
     
-    path = os.path.join(root_path, "Data/length" + str(seg_length))
+    path = os.path.join("../../Data/length" + str(seg_length))
     
     #load data
     df_features = pd.read_csv(os.path.join(path, "segment_features.csv"))
     df_xy = pd.read_csv(os.path.join(path, "segment_xys.csv"))
-    df_for_arena_dims = plot_segment.load_df_for_arena_dims(path = root_path)
+    df_for_arena_dims = plot_segment.load_df_for_arena_dims()
     
     df_features.iloc[:,4:12] = pkm.scale_features(df_features.iloc[:,4:12])
     

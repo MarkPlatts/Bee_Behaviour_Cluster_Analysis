@@ -15,6 +15,10 @@ from sklearn.metrics import silhouette_samples, silhouette_score
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
+from os import chdir, getcwd
+wd=getcwd()
+chdir(wd)
+
 #np.set_printoptions(threshold=np.inf)
 #logging.basicConfig(filename=os.path.join(datapath, "sample.log"), level=logging.DEBUG, filemode = "w")
 
@@ -35,8 +39,8 @@ for iseg_length in segment_lengths:
     if sil_plot:
         fig = plt.figure(1)
 
-    df_features = pd.read_csv(os.path.join(root_path, "Data/length" + str(iseg_length) + "/segment_features.csv"))
-    df_xys      = pd.read_csv(os.path.join(root_path, "Data/length" + str(iseg_length) + "/segment_xys.csv"))
+    df_features = pd.read_csv(os.path.join("../../Data/length" + str(iseg_length) + "/segment_features.csv"))
+    df_xys      = pd.read_csv(os.path.join(root_path, "../../Data/length" + str(iseg_length) + "/segment_xys.csv"))
     
     numpy_features = df_features.iloc[:,4:12].values
     #fit kmeans
@@ -138,7 +142,7 @@ for iseg_length in segment_lengths:
             
     if sil_plot:
     
-        plt.savefig(os.path.join(root_path, "Cluster_Analysis/", "figs/", "silhouette_length" + str(iseg_length) + ".pdf"))
+        plt.savefig(os.path.join("../../figs/", "silhouette_length" + str(iseg_length) + ".pdf"))
     
         plt.close(fig)    
     #perform voting for each x,y coordinate's cluster membership

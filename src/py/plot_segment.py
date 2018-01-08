@@ -37,10 +37,10 @@ def plot_segment(seg):
     
     plt.plot(seg['x_mm'], seg['y_mm'])
     
-def load_df_for_arena_dims(path):
-    df_nt = pd.read_csv(os.path.join(path, "Data/bee-data_NT.csv"))
-    df_procaine = pd.read_csv(os.path.join(path, "Data/bee-data_procaine.csv"))
-    df_saline = pd.read_csv(os.path.join(path, "Data/bee-data_saline.csv"))
+def load_df_for_arena_dims():
+    df_nt = pd.read_csv(os.path.join("../../Data/bee-data_NT.csv"))
+    df_procaine = pd.read_csv(os.path.join("../../Data/bee-data_procaine.csv"))
+    df_saline = pd.read_csv(os.path.join("../../Data/bee-data_saline.csv"))
     x = pd.concat([df_nt, df_procaine, df_saline], axis=0)
     return(x)
     
