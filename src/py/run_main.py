@@ -23,9 +23,9 @@ datapath = "../../Data/"
 
 logging.basicConfig(filename=os.path.join(datapath, "sample.log"), level=logging.DEBUG, filemode = "w")
 
-df_nt = filehandling.loadData(data_file_name_path = datapath + "bee-data_NT.csv")
-df_procaine = filehandling.loadData(data_file_name_path = datapath + "bee-data_procaine.csv")
-df_saline = filehandling.loadData(data_file_name_path = datapath + "bee-data_saline.csv")
+df_nt = pd.read_csv(datapath + "bee-data_NT.csv")
+df_procaine = pd.read_csv(datapath + "bee-data_procaine.csv")
+df_saline = pd.read_csv(datapath + "bee-data_saline.csv")
 
 dfs_combined = pd.concat([df_nt, df_procaine, df_saline], axis=0)
 temp_arena = classArena.classArena(dfs_combined)

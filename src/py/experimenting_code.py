@@ -9,12 +9,13 @@ import segment as sg
 import preprocess
 import ellipse_tool as et
 import numpy as np
+import pandas as pd
 
 from os import chdir, getcwd
 wd=getcwd()
 chdir(wd)
 
-df = preprocess.loadData("../../Data/bee-data_NT.csv")
+df = pd.read_csv("../../Data/bee-data_NT.csv")
 
 df = preprocess.addColCumulativeDistance(df)
 df = preprocess.addDistanceCentreCol(df)

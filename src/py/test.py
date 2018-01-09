@@ -24,9 +24,7 @@ class TestSegmentMethods(unittest.TestCase):
         
     def test_MaximumLoopLength(self):
         
-        df = preprocess.execute("../../Data/TestData/bee-data_NT_test_maxloop.csv")
-        #df = self.loadData("../../Data/TestData/bee-data_NT_test_maxloop.csv")
-                                                                #(traj, lseg, ovlp, cum_dist_end_prev)
+        df = pd.read_csv("../../Data/TestData/bee-data_NT_test_maxloop.csv")
         arena = classArena.classArena(df)
         
         dt_first_segment, cum_dist_end_segment, end_trajectory = cs.getSegment(df,20,0,0)

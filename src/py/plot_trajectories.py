@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 import math
 import shared as sh
 import preprocess
+import pandas as pd
+
 
 from os import chdir, getcwd
 wd=getcwd()
@@ -24,7 +26,7 @@ chdir(wd)
 def drawArena():
     
 
-    df = preprocess.loadData("../../Data/bee-data_NT.csv")
+    df = pd.read_csv("../../Data/bee-data_NT.csv")
     df = preprocess.addColCumulativeDistance(df)
     df = preprocess.addDistanceCentreCol(df)
     
@@ -64,7 +66,7 @@ cum_dist_end_prev = 600
 drawArena()
 
     
-df = preprocess.loadData("../../Data/bee-data_NT.csv")
+df = pd.read_csv("../../Data/bee-data_NT.csv")
 df = preprocess.addColCumulativeDistance(df)
 df = preprocess.addDistanceCentreCol(df)
 
