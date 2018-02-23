@@ -5,7 +5,6 @@ Created on Mon Oct 30 13:32:56 2017
 @author: Mark
 """
 
-import filehandling
 import classArena
 import main
 import pandas as pd

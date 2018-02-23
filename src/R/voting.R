@@ -42,13 +42,18 @@ perform_voting <- function(df){
   dt <- merge(dt, cluster_won, by = "coord_id", join = "left", sort = FALSE)
 }
 
-segment_length <- 150
-n_clusters <- 5
+generate_voting_files <- function(segment_length, n_clusters){
+  path <- paste0(here(), "/Data/length", segment_length, "/")
+  df <- read.csv(paste0(path, "segment_xys_with_clust_name_", n_clusters, "_clusters.csv"))
+  dt <- perform_voting(df)
+  write.csv(dt, paste0(path, "xy_voted_", n_clusters, "_clusters.csv"))
+}
 
-path <- paste0(here(), "/Data/length", segment_length, "/")
-df <- read.csv(paste0(path, "segment_xys_with_clust_name_", n_clusters, "_clusters.csv"))
+# generate_voting_files(segment_length = 100, n_clusters = 5)
+# generate_voting_files(segment_length = 150, n_clusters = 5)
+generate_voting_files(segment_length = 200, n_clusters = 4)
+generate_voting_files(segment_length = 250, n_clusters = 4)
+generate_voting_files(segment_length = 300, n_clusters = 2)
 
-dt <- perform_voting(df)
 
-write.csv(dt, paste0(path, "xy_voted_", n_clusters, "_clusters.csv"))
 

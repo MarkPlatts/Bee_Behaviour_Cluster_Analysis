@@ -16,6 +16,25 @@ wd=getcwd()
 chdir(wd)
 
 def create_file_with_cluster_membership(seg_length, n_clusters):
+    """
+    
+    Parameters
+    ----------
+    df : pandas.dataframe
+        A data frame where each row contains the features for a given segment
+    n_nearest : integer
+        The number of nearest neighbours to find.  
+    kmean : dict
+        A dictionary containing the feature names and values for a given kmeans
+        centre.  
+        
+    Returns
+    -------
+    pandas.core.series.Series
+        A series contain the segmentID's for the n closest neighbours to the
+        given kmeans centre.
+    
+    """
     
     path = os.path.join("../../Data/length" + str(seg_length))
     
@@ -36,6 +55,8 @@ def create_file_with_cluster_membership(seg_length, n_clusters):
     
     df_xy.to_csv(path_or_buf = os.path.join(path, 'segment_xys_with_clust_name_' + str(n_clusters) + '_clusters.csv'))
              
-#root_path = "C:/Users/Mark/Dropbox/RodentDataAnalytics-Bees Experiment/Australia Experiment/"
-
-create_file_with_cluster_membership(seg_length = 150, n_clusters = 5)
+#create_file_with_cluster_membership(seg_length = 100, n_clusters = 5)
+#create_file_with_cluster_membership(seg_length = 150, n_clusters = 5)
+#create_file_with_cluster_membership(seg_length = 200, n_clusters = 4)
+#create_file_with_cluster_membership(seg_length = 250, n_clusters = 4)
+#create_file_with_cluster_membership(seg_length = 300, n_clusters = 2)

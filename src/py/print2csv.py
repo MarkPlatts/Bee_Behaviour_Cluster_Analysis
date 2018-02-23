@@ -14,10 +14,11 @@ import os.path
 #def print2CSV(list_segments):
 def output(list_segments, filepath):
     
-    seg1 = list_segments[0]
+    seg1 = list_segments[0] # This is only the first segment
     
     if not os.path.isfile(os.path.join(filepath, "segment_features.csv")):
         
+        #create new file
         ofile = open(os.path.join(filepath, "segment_features.csv"), "wb")
         writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
         
@@ -25,10 +26,10 @@ def output(list_segments, filepath):
         row = ["SegmentID", "Experiment", "UsingLight", "FileName"]
         for iFeature in seg1.features:
             row = row + [iFeature.featureName()]
-            
         writer.writerow(row)    
         
     else:
+        #connect to existing file
         ofile = open(os.path.join(filepath, "segment_features.csv"), "ab")
         writer = csv.writer(ofile, delimiter=',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)     
     
@@ -62,8 +63,6 @@ def output_xy(list_segments, filepath):
         for iRow in range(0, nRows):
             row = [iSeg.segmentID, iSeg.experiment_name, iSeg.using_light, iSeg.filename, \
                     iSeg.segment_data.iloc[iRow]['x_mm'], iSeg.segment_data.iloc[iRow]['y_mm']]
-#            for iFeature in iSeg.features:
-#                row = row + [iFeature.value]
             writer.writerow(row)
     
     ofile.close()    

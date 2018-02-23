@@ -21,6 +21,34 @@ import logging
 #import enumFeature.enumFeature
 
 class Feature:
+    """Abstract feature class
+    
+    Parameters
+    ----------
+    segment : Segment
+        The segment for which the given feature is being calculated.
+    enumFeature : enums.eFeature
+        Gave an index number relating to the feature name. This was poor
+        constructed and I don't think it works anymore. It identifying the
+        position of a value in a list, but since certain features were
+        deleted, the index no longer pointed to the correct position. Should
+        have probably used a dictionary data type.        
+        
+    Attributes
+    ----------
+    print_feature_names : boolean
+        Set to True if you want the feature name to be printed to the log file.
+    segment : Segment
+        The segment for which the given feature is being calculated.
+    value : float
+        The feature value calculated.  
+    name : string
+        The name of the feature.  
+    enumFeature : enums.eFeature
+        See Parameters above.  
+        
+    """    
+    
     __metaclass__ = ABCMeta
     
     index = -1

@@ -14,6 +14,7 @@ import numpy as np
 import create_segment as cs
 import classArena
 import enums
+import pandas as pd
 
 from os import chdir, getcwd
 wd=getcwd()
