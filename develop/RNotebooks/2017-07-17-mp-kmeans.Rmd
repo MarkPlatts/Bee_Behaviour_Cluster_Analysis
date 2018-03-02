@@ -6,6 +6,8 @@ output:
   pdf_document: default
 ---
 
+Just a test
+
 Load necessary libraries & sources
 ```{r}
 library(data.table)
