@@ -15,17 +15,17 @@ library(stringr)
 library(ggplot2)
 library(here)
 
-source(here("src/R/helper_functions.R"))
+source(here::here("src/R/helper_functions.R"))
 ```
 
 Load data into memory and check that it doesn't contain any NA's
 ```{r}
-dt <- fread(here("Output_features/segment_features.csv"),
+dt <- fread(here::here("Output_features/segment_features.csv"),
             stringsAsFactors = TRUE)
 
 print(any(is.na(dt)))
 
-dt_xy <- fread(here("Data/Output_features/segment_xys.csv"), head = TRUE)
+dt_xy <- fread(here::here("Data/Output_features/segment_xys.csv"), head = TRUE)
 ```
 
 Lets take a look at the data and see if the ranges look alright
